@@ -6,7 +6,9 @@
         <script type="text/javascript" src="js/patient.js"></script>
     </head>
     <body>
-        <?php require 'toolbar.php'; ?>
+        <?php require 'toolbar.php' ?>
+        <?php require 'header.php' ?>
+        <?php require 'mainMenu.php' ?>
         <h1>Create Patient Form</h1>
         <?php 
         if (isset($errorMessage)) {
@@ -91,5 +93,6 @@
             </table>
 
         </form>
+        <?php require 'footer.php'; ?>
     </body>
 </html>

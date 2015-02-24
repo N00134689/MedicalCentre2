@@ -8,7 +8,7 @@ class WardTableGateway {
         $this->connection = $c;
     }
 
-    public function getPatients() {
+    public function getWards() {
         // execute a query to get all wards
         $sqlQuery = "SELECT * FROM wards";
 
@@ -40,17 +40,16 @@ class WardTableGateway {
         return $statement;
     }
 
-    public function insertWard($n, $nb, $nr, $ad) {
+    public function insertWard($n, $nb, $nr) {
         $sqlQuery = "INSERT INTO wards " .
-                "(name, numBeds, nurse, admitted) " .
-                "VALUES (:name, :numBeds, :nurse, :admitted)";
+                "(name, numBeds, nurse) " .
+                "VALUES (:name, :numBeds, :nurse)";
 
         $statement = $this->connection->prepare($sqlQuery);
         $params = array(
             "name" => $n,
             "numBeds" => $nb,
-            "nurse" => $nr,
-            "admitted" => $ad
+            "nurse" => $nr
         );
 
         $status = $statement->execute($params);
@@ -81,13 +80,12 @@ class WardTableGateway {
         return ($statement->rowCount() == 1);
     }
 
-    public function updateWard($id, $n, $nb, $nr, $ad) {
+    public function updateWard($id, $n, $nb, $nr) {
         $sqlQuery =
                 "UPDATE wards SET " .
                 "name = :name, " .
                 "numBeds = :numBeds, " .
-                "nurse = :nurse, " .
-                "admitted = :admitted " .
+                "nurse = :nurse " .
                 "WHERE id = :id";
 
         $statement = $this->connection->prepare($sqlQuery);
@@ -95,8 +93,7 @@ class WardTableGateway {
             "id" => $id,
             "name" => $n,
             "numBeds" => $nb,
-            "nurse" => $nr,
-            "admitted" => $ad,
+            "nurse" => $nr
         );
 
         $status = $statement->execute($params);

@@ -1,5 +1,4 @@
 <?php
-require_once 'Patient.php';
 require_once 'Connection.php';
 require_once 'PatientTableGateway.php';
 
@@ -33,6 +32,8 @@ $row = $statement->fetch(PDO::FETCH_ASSOC);
     </head>
     <body>
         <?php require 'toolbar.php' ?>
+        <?php require 'header.php' ?>
+        <?php require 'mainMenu.php' ?>
         <h1>Edit Patient Form</h1>
         <?php
         if (isset($errorMessage)) {
@@ -144,5 +145,6 @@ $row = $statement->fetch(PDO::FETCH_ASSOC);
             </table>
 
         </form>
+        <?php require 'footer.php'; ?>
     </body>
 </html>
