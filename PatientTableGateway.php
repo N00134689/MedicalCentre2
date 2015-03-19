@@ -10,7 +10,10 @@ class PatientTableGateway {
 
     public function getPatients() {
         // execute a query to get all patients
-        $sqlQuery = "SELECT * FROM patients";
+        $sqlQuery =
+                "SELECT p.*, w.name AS wardName
+                 FROM patients p
+                 LEFT JOIN wards w ON w.id = p.ward_id";
 
         $statement = $this->connection->prepare($sqlQuery);
         $status = $statement->execute();
@@ -22,9 +25,34 @@ class PatientTableGateway {
         return $statement;
     }
 
+    public function getPatientsByWardId($wardId) {
+        // execute a query to get all patients
+        $sqlQuery =
+                "SELECT p.*, w.name AS wardName
+                 FROM patients p
+                 LEFT JOIN wards w ON w.id = p.ward_id
+                 WHERE p.ward_id = :wardId";
+
+        $params = array(
+            'wardId' => $wardId
+        );
+        $statement = $this->connection->prepare($sqlQuery);
+        $status = $statement->execute($params);
+
+        if (!$status) {
+            die("Could not retrieve patients");
+        }
+
+        return $statement;
+    }
+
     public function getPatientById($id) {
         // execute a query to get the user with the specified id
-        $sqlQuery = "SELECT * FROM patients WHERE id = :id";
+        $sqlQuery =
+                "SELECT p.*, w.name AS wardName
+                 FROM patients p
+                 LEFT JOIN wards w ON w.id = p.ward_id
+                 WHERE p.id = :id";
 
         $statement = $this->connection->prepare($sqlQuery);
         $params = array(
@@ -40,24 +68,26 @@ class PatientTableGateway {
         return $statement;
     }
 
-    public function insertPatient($n, $a, $m, $e, $b) {
-        $sqlQuery = "INSERT INTO patients " .
-                "(name, address, Mobile, email, birthday) " .
-                "VALUES (:name, :address, :mobile, :email, :birthday)";
+    public function insertProgrammer($n, $a, $m, $sn, $sk, $sl, $mId) {
+        $sqlQuery = "INSERT INTO programmers " .
+                "(name, email, mobile, staffNumber, skills, salary, manager_id) " .
+                "VALUES (:name, :email, :mobile, :staffNumber, :skills, :salary, :manager_id)";
 
         $statement = $this->connection->prepare($sqlQuery);
         $params = array(
             "name" => $n,
-            "address" => $a,
-            "mobile" => $m,
             "email" => $e,
-            "birthday" => $b
+            "mobile" => $m,
+            "staffNumber" => $sn,
+            "skills" => $sk,
+            "salary" => $sl,
+            "manager_id" => $mId
         );
 
         $status = $statement->execute($params);
 
         if (!$status) {
-            die("Could not insert user");
+            die("Could not insert programmer");
         }
 
         $id = $this->connection->lastInsertId();
@@ -65,8 +95,8 @@ class PatientTableGateway {
         return $id;
     }
 
-    public function deletePatient($id) {
-        $sqlQuery = "DELETE FROM patients WHERE id = :id";
+    public function deleteProgrammer($id) {
+        $sqlQuery = "DELETE FROM programmers WHERE id = :id";
 
         $statement = $this->connection->prepare($sqlQuery);
         $params = array(
@@ -76,20 +106,21 @@ class PatientTableGateway {
         $status = $statement->execute($params);
 
         if (!$status) {
-            die("Could not delete user");
+            die("Could not delete programmer");
         }
 
         return ($statement->rowCount() == 1);
     }
 
-    public function updatePatient($id, $n, $a, $m, $e, $b) {
+    public function updateProgrammer($id, $n, $a, $m, $e, $b, $wId) {
         $sqlQuery =
-                "UPDATE patients SET " .
-                "name = :name, " .
+                "UPDATE programmers SET " .
+                "name = :name, " .               
                 "address = :address, " .
-                "Mobile = :mobile, " .
+                "mobile = :mobile, " .
                 "email = :email, " .
-                "birthday = :birthday " .
+                "birthday = :birthday, " .
+                "ward_id = :ward_id " .
                 "WHERE id = :id";
 
         $statement = $this->connection->prepare($sqlQuery);
@@ -100,6 +131,7 @@ class PatientTableGateway {
             "mobile" => $m,
             "email" => $e,
             "birthday" => $b,
+            "manager_id" => $mId
         );
 
         $status = $statement->execute($params);

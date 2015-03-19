@@ -34,7 +34,9 @@ class UserTableGateway {
 
         $params = array(
             "username" => $username,
-            "password" => $password
+            "password" => $password,
+            "email" => $email,
+            "website" => $website
         );
         
         $status = $statement->execute($params);

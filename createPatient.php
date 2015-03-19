@@ -1,46 +1,27 @@
 <?php
-
 require_once 'Connection.php';
 require_once 'PatientTableGateway.php';
-
-$connection = Connection::getInstance();
-
-$gateway = new PatientTableGateway($connection);
 
 $id = session_id();
 if ($id == "") {
     session_start();
 }
 
-$name = $_POST['name'];
-$address = $_POST['address'];
-$mobile = $_POST['mobile'];
-$email = $_POST['email'];
-$birthday = $_POST['birthday'];
+require 'ensureUserLoggedIn.php';
 
-$errorMessage = array();
-if ($name === "") {
-    $errorMessage['name'] = "Name cannot be empty";
-}
+$connection = Connection::getInstance();
+$gateway = new PatientTableGateway($connection);
 
-if ($address === "") {
-    $errorMessage['address'] = "Address cannot be empty";
-}
-
-if ($mobile === "") {
-    $errorMessage['mobile'] = "Mobile cannot be empty";
+$name        = filter_input(INPUT_POST, 'name',        FILTER_SANITIZE_FULL_SPECIAL_CHARS);
+$address     = filter_input(INPUT_POST, 'address',     FILTER_SANITIZE_ADDRESS);
+$mobile      = filter_input(INPUT_POST, 'mobile',      FILTER_SANITIZE_FULL_SPECIAL_CHARS);
+$email       = filter_input(INPUT_POST, 'email',       FILTER_SANITIZE_EMAIL);
+$birthday    = filter_input(INPUT_POST, 'birthday',    FILTER_SANITIZE_EMAIL);
+$wardId      = filter_input(INPUT_POST, 'ward_id',     FILTER_SANITIZE_NUMBER_INT);
+if ($wardId == -1) {
+    $wardId = NULL;
 }
 
-if ($email === "") {
-    $errorMessage['email'] = "Email cannot be empty";
-}
+$id = $gateway->insertPatient($name, $address, $email, $mobile, $birthday, $wardId);
 
-if ($birthday === "") {
-    $errorMessage['birthday'] = "Birthday cannot be empty";
-}
-if (empty($errorMessage)) {
-    $gateway->insertPatient($name, $address, $mobile, $email, $birthday);
-    header('Location: home.php');
-} else {
-    require 'createPatientForm.php';
-}
+header('Location: viewPatients.php');

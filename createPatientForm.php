@@ -1,20 +1,38 @@
+<?php
+require_once 'connection.php';
+require_once 'WardTableGateway.php';
+
+$id = session_id();
+if ($id == "") {
+    session_start();
+}
+
+require 'ensureUserLoggedIn.php';
+
+$conn = Connection::getInstance();
+$wardGateway = new WardTableGateway($conn);
+
+$wards = $wardGateway->getWards();
+?>
 <!DOCTYPE html>
 <html>
     <head>
         <meta charset="UTF-8">
         <title></title>
+        <?php require "styles.php" ?>
         <script type="text/javascript" src="js/patient.js"></script>
     </head>
     <body>
         <?php require 'toolbar.php' ?>
         <?php require 'header.php' ?>
         <?php require 'mainMenu.php' ?>
-        <h1>Create Patient Form</h1>
-        <?php 
-        if (isset($errorMessage)) {
-            echo '<p>Error: ' . $errorMessage . '</p>';
-        }
-        ?>
+        <div class="container">
+            <h2>Create Patient Form</h2>
+            <?php
+            if (isset($errorMessage)) {
+                echo '<p>Error: ' . $errorMessage . '</p>';
+            }
+            ?>
         <form id="createPatientForm" action="createPatient.php" method="POST">
             <table border="0">
                 <tbody>
@@ -83,6 +101,21 @@
                             </span>
                         </td>
                     </tr>
+                     <tr>
+                            <td>Ward</td>
+                            <td>
+                                <select name="ward_id">
+                                    <option value="-1">No ward</option>
+                                    <?php
+                                    $w = $wards->fetch(PDO::FETCH_ASSOC);
+                                    while ($w) {
+                                        echo '<option value="' . $w['id'] . '">' . $w['name'] . '</option>';
+                                        $w = $wards->fetch(PDO::FETCH_ASSOC);
+                                    }
+                                    ?>
+                                </select>
+                            </td>
+                        </tr>
                     <tr>
                         <td></td>
                         <td>
