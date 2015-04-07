@@ -21,7 +21,7 @@ $patientGateway = new PatientTableGateway($connection);
 $medicineGateway = new MedicineTableGateway($connection);
 
 $patients = $patientGateway->getPatientById($id);
-$medicine = $medicineGateway->getMedicineByPatientId($id)
+$medicine = $medicineGateway->getMedicineByPatientId($id);
 ?>
 <!DOCTYPE html>
 <html>
@@ -56,7 +56,7 @@ $medicine = $medicineGateway->getMedicineByPatientId($id)
                     echo '</tr>';
                     echo '<tr>';
                     echo '<td>Mobile</td>'
-                    . '<td>' . $patient['mobile'] . '</td>';
+                    . '<td>' . $patient['Mobile'] . '</td>';
                     echo '</tr>';
                     echo '<tr>';
                     echo '<td>Email</td>'
@@ -84,12 +84,9 @@ $medicine = $medicineGateway->getMedicineByPatientId($id)
                 <table class="table">
                     <thead>
                         <tr>
-                            <th>Make</th>
-                            <th>Model</th>
-                            <th>OS</th>
-                            <th>Date Bought</th>
-                            <th>Price</th>
-                            <th>Actions</th>
+                            <th>Date Administered</th>
+                            <th>Medication Name</th>
+                            <th>Dosage Given</th>
                         </tr>
                     </thead>
                     <tbody>
